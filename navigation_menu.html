@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Navigation Menu</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Apply a default font and smooth scrolling */
+        body {
+            font-family: "Inter", sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Base styles for the navigation bar */
+        .navbar {
+            @apply fixed top-0 left-0 w-full bg-blue-600 text-white shadow-lg transition-all duration-300 z-50;
+        }
+
+        /* Styles for the navigation bar when scrolled */
+        .navbar.scrolled {
+            @apply bg-blue-800 py-3 shadow-xl; /* Darker blue, slightly more padding */
+        }
+
+        /* Base styles for menu items */
+        .nav-item {
+            @apply px-4 py-2 text-lg rounded-md transition-colors duration-200;
+        }
+
+        /* Hover effect for menu items */
+        .nav-item:hover {
+            @apply bg-blue-700 text-white; /* Darker background on hover */
+        }
+
+        /* Style for the active menu item */
+        .nav-item.active {
+            @apply bg-blue-700 text-white font-semibold;
+        }
+
+        /* Content section styles for demonstration */
+        .content-section {
+            @apply h-screen flex items-center justify-center text-4xl font-bold text-gray-700;
+            scroll-margin-top: 6rem; /* Adjust for fixed navbar height */
+        }
+
+        #home { background-color: #f3f4f6; }
+        #about { background-color: #e5e7eb; }
+        #services { background-color: #d1d5db; }
+        #contact { background-color: #9ca3af; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="navbar py-4">
+        <div class="container mx-auto flex justify-center space-x-6">
+            <a href="#home" class="nav-item active">Home</a>
+            <a href="#about" class="nav-item">About</a>
+            <a href="#services" class="nav-item">Services</a>
+            <a href="#contact" class="nav-item">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Page Content for scrolling demonstration -->
+    <div class="pt-20"> <!-- Padding to prevent content from being hidden by the fixed navbar -->
+        <section id="home" class="content-section">
+            <h1>Welcome Home!</h1>
+        </section>
+        <section id="about" class="content-section">
+            <h1>About Us</h1>
+        </section>
+        <section id="services" class="content-section">
+            <h1>Our Services</h1>
+        </section>
+        <section id="contact" class="content-section">
+            <h1>Contact Us</h1>
+        </section>
+    </div>
+
+    <script>
+        const navbar = document.getElementById('navbar');
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('section[id]');
+
+        // Function to handle scroll event for navbar style change
+        function handleScroll() {
+            if (window.scrollY > 50) { // When scrolled down 50px or more
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Determine active section and update active class on nav item
+            let currentActiveSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - navbar.offsetHeight - 10; // Adjust for navbar height
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentActiveSection = section.id;
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href').substring(1) === currentActiveSection) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Add scroll event listener to the window
+        window.addEventListener('scroll', handleScroll);
+
+        // Initial call to set correct state on page load
+        document.addEventListener('DOMContentLoaded', handleScroll);
